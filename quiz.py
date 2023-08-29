@@ -1,23 +1,29 @@
 # Здесь будет код веб-приложения
 from random import shuffle
 from flask import Flask, session, redirect, request, url_for, render_template
-from db_scripts import get_question_after
+from db_scripts import get_question_after, get_quises, check_answer
 import os
 
 folder = os.getcwd()
 
-def index():
-    max_quiz = 3
-    session['quiz'] = randint(1, max_quiz)
+def start_quiz(quiz_id):
+    '''создаёт нужные значения в словаре session'''
+    session['quiz'] = quiz_id
     session['last_question'] = 0
+    session['answers'] = 0
+    session['total'] = 0
+
+def index():
+    ''' Первая страница: если пришли запросом GET, то выбрать викторину, 
+    если POST - то запомнить id викторины и отправлять на вопросы'''
     if request.method == 'GET':
-        session['quiz'] = -1
-        session['last_question'] = 0
+        # викторина не выбрана, сбрасываем id викторины и показываем форму выбора
+        start_quiz(-1)
         return quiz_form()
     else:
-        quiz.id = request.form.get('quiz')
-        session['quiz'] = quiz.id
-        session['last_question'] = 0
+        # получили дополнительные данные в запросе! Используем их:
+        quest_id = request.form.get('quiz') # выбранный номер викторины 
+        start_quiz(quest_id)
         return redirect(url_for('test'))
 
 def test():
@@ -51,12 +57,6 @@ def quiz_form():
                       ''')
         options = options + option_line
     return html_beg + options + html_end
-
-def start_quiz(quiz_id):
-    session["quiz"] = 0
-    session["last_question"] = 0
-    session["answer"] = 0
-    session["total"] = 0
 
 def save_answers():
     answer = request.form.get('ans_text')
