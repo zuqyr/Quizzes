@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Викторина</title>
+</head>
+<body>
+<select name="quiz">
+    {% for id, name in q_list %}
+        <option value="{{id}}">{{name}}</option>
+    {% endfor %}
+</select>
+</body>
+</html>
