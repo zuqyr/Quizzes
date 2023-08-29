@@ -1,4 +1,5 @@
 import sqlite3
+from random import randint
 db_name = 'quiz.sqlite'
 conn = None
 cursor = None
@@ -115,11 +116,11 @@ def show_tables():
     show('quiz')
     show('quiz_content')
 
-def check_answer():
-    query = '''SELECT question.answer
-    FROM quiz_content, question
+def check_answer(q_id, ans_text):
+    query = '''SELECT questions.answer
+    FROM quiz_content, questions
     WHERE quiz_content.id = ?
-    AND quiz_content.question_id = question.id
+    AND quiz_content.question_id = questions.id
     '''
     open()
     cursor.execute(query, str(q_id))
@@ -143,6 +144,16 @@ def get_quizzes():
     close()
     return result
     
+def get_random_quiz_id():
+    query = 'SELECT quiz_id FROM quiz_content'
+    open()
+    cursor.execute(query)
+    ids = cursor.fetchall()
+    rand_num = randint(0, len(ids) - 1)
+    rand_id = ids[rand_num][0]
+    close()
+    return rand_id
+
 def main():
     clear_db()
     create()
